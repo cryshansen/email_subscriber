@@ -1,0 +1,6 @@
+email_subscriber.config_form:
+  title: 'Email Subscription Settings'
+  description: 'Configure the form to function with both Brevo and Hubspot using the fields they require for their API keys and functionality.'
+  parent: system.admin_config_services
+  route_name: email_subscriber.config_form
+  weight: 100

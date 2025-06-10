@@ -1,0 +1,40 @@
+email_subscriber.emailsubscribe:
+  path: '/newsletter-signup'
+  defaults:
+    _form: '\Drupal\email_subscriber\Form\EmailSubscribeForm'
+    _title: 'Newsletter Sign up'
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'
+email_subscriber.config_form:
+  path: '/admin/config/services/email-subscribe'
+  defaults:
+    _form: '\Drupal\email_subscriber\Form\EmailSubscribeConfigForm'
+    _title: 'Newsletter Email Subscription Settings'
+  requirements:
+    _permission: 'administer site configuration'
+email_subscriber.email_modal_form:
+  path: '/email-modal-form'
+  defaults:
+    _title: 'Newsletter Modal Form'
+    _form: '\Drupal\email_subscriber\Form\EmailModalForm'
+  requirements:
+    _permission: 'access content'
+email_subscriber.unsubscribe_form:
+  path: '/unsubscribe-from-newsletter-form'
+  defaults:
+    _form: '\Drupal\email_subscriber\Form\UnsubscribeForm'
+    _title: 'Unsubscribe from Newsletters'
+  requirements:
+    _permission: 'access content'
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+email_subscriber.signup:
+  path: '/signup/{emailaddress}'
+  defaults:
+    _controller: '\Drupal\email_subscriber\Controller\SubscribeController::confirmSignup'
+    _title: 'Confirm Sign-up opt in'
+  requirements:
+    _permission: 'access content'
+    emailaddress: .+

@@ -1,0 +1,39 @@
+email_subscribe_styles: 
+  js:
+    js/email-subscribe.js: {}
+    js/modal-scripts.js: {}
+  css:
+    theme:
+      css/styles.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal.dialog.ajax
+email_modal_styles: 
+  css:
+    theme:
+      css/email-modal-styles.css: {}
+  js:
+    js/email-modal-v2.js?v=20250609: {}
+    js/email-modal-modal.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupal.dialog.ajax    
+email_unsubscribe:
+  css:
+    theme:
+      css/styles.css: {}
+  js:
+    js/email-unsubscribe.js: {}
+  dependencies:
+    - core/jquery
+email_subscribe_form_email_styles: 
+  css:
+    theme:
+      css/styles.css: {}
+  js:
+    js/email-subscribe-form.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupal.dialog.ajax

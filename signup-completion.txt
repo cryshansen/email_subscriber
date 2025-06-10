@@ -1,0 +1,8 @@
+TODO:
+
+Version 1 has brevo and hubspot connections but the third party systems must be set up to utilize the feature and once it is connected, uncomment the code that calls these features
+
+
+
+database entry
+(51, 'cryssy.crysen@gmail.com', 'Cryssy', 'Crysen', '66.248.200.37', 1725485434, 'pending', 0, 0, 0),

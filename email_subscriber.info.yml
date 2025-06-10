@@ -1,0 +1,8 @@
+name: Email Subscriber
+description: 'Provides a form in custom block for email subscriptions  and unsubsription on a site.'
+type: module
+version: 1.0 #increment the version to fire the update
+core_version_requirement: ^9 || ^10
+package: Custom Forms
+
+

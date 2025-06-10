@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Email Subscriber module's procedural hooks and functions.
+ */
+/**
+ * Implements hook_theme().
+ */
+function email_subscriber_theme() {
+  
+  $path = \Drupal::service('extension.list.module')->getPath('email_subscriber');
+
+  return [ 
+  //email_subscribe_form 
+    'email_subscribe_form'=> [
+        'render element' => 'form',
+        'template' => 'email-subscribe-form',
+        'path' => $path. '/templates',
+      ],
+    'email_modal_form' => [
+      'render element' => 'form',
+      'template' => 'email-modal-form', // This corresponds to the Twig filename.
+      'path' => $path. '/templates', // Adjust the path as necessary.
+    ],
+    'page_email_subscribe_form'=> [
+        'render element' => 'form',
+        'template' => 'page-email-subscribe-form',
+        'path' => $path. '/templates',
+      ],    
+  ];
+}
+

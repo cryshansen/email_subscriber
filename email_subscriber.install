@@ -1,0 +1,305 @@
+<?php
+use Drupal\Core\Database\Database;
+use Drupal\Core\Database\Driver\mysql\CreateTable;
+use Drupal\Core\Database\Schema\Schema;
+/**
+* @file
+* Install, update and uninstall functions for email_subscriber
+* 
+* only require email and ip in hubspot
+*/
+function email_subscriber_schema(){
+    $schema['email_subscriber'] = array(
+        'description' => 'The table for storing the email subscribe data.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for email subscribe form',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'unsigned' => TRUE,
+            ),
+            'firstname' => array(
+                'description' => 'firstname of subscriber',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'lastname' => array(
+                'description' => 'lastname of subscriber',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'email' => array(
+                'description' => 'email',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'ip_address' => array(
+                'description' => 'ip address',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'created' => array(
+                'description' => 'Timestamp when the subscribe was created.',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+              ),
+            'updated' => array(
+                'description' => 'Timestamp when the subscribe was confirmed.',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => FALSE,
+            ),
+            'confirm_status' => array(
+                'description' => 'Changed when user clicks confirmation button initial request value is pending / confirmed after button doi click',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+            ),
+            'unsubscribe_requested' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'description' => 'Timestamp when the unsubscribe request was made.',
+              ),
+            'unsubscribed' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'description' => 'Boolean: 1 if unsubscribed, 0 otherwise.',
+                'default' => 0,
+              ),
+              
+            
+        ),
+        'primary key' => array('id'),
+    );
+   // CREATE TABLE subscription_actions
+    $schema['email_subscriber_subscription_actions'] = array( 
+        'description' => 'The table for storing the email subscribe data.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for email subscribe form',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'unsigned' => TRUE,
+            ),
+            'email' => array(
+                'description' => 'email aka contact info in hubspot',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'ip_address' => array(
+                'description' => 'ip address',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'channel' => array(
+                'description' => 'Channel in Hubspot EMAIL/SMS?',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => "Email",
+            ),
+            'subscriptionId' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'description' => 'Corresponds to Hubspot "Marketing Information" top level subscription id as default', //Corresponds to two types: 'marketing' and one to one via the             
+                'default' => "65152031",
+            ),
+            'status' => array( //VARCHAR(20) NOT NULL, -- "opted-in", "opted-out"
+                'description' => 'New Status of contact value one of "opted-in", "opted-out". corresponds to hubspot value',
+                'type' => 'varchar',
+                'length' => 20,
+                'not null' => TRUE,
+             ),
+            'action' => array( //VARCHAR(20) NOT NULL, -- "subscribe", "unsubscribe", "resubscribe"
+                'description' => 'Action value one of "subscribe", "unsubscribe", "resubscribe".',
+                'type' => 'varchar',
+                'length' => 20,
+                'not null' => TRUE,
+             ),
+             'action_time' => array( //INT NOT NULL, -- Unix timestamp of when the action happened
+                'description' => 'Unix timestamp of when the action happened.',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+             ),
+             'source' => array( //VARCHAR(255), -- Source of the action (e.g., "newsletter form", "email link")
+                'description' => '-- Source of the action (e.g., "newsletter form", "email link", "url") "Portal User", Public API ',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                ),
+             'legal_basis' => array(
+                'description' => 'Administration Optional: additional info "LEGITIMATE_INTEREST_PQL","LEGITIMATE_INTEREST_CLIENT" "CONSENT_WITH_NOTICE", "PERFORMANCE_OF_CONTRACT" ,"NON_GDPR", PROCESS_AND_STORE,"LEGITIMATE_INTEREST_OTHER"',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,             
+
+             ),
+             'legal_basis_explanation' => array(
+                'description' => 'Administration Optional: additional info about the legal basis -- description of intentions "brevo unsubscribed from email list. this goes to contact level" ',
+                'type' => 'text',
+                'not null' => FALSE,             
+                'default' => "Unsubscribed from Brevo newsletter signup.",
+             ),
+                           
+                
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema['cron_unsubscriber_tasks_log'] = [
+        'description' => 'Stores log messages for cron unsubscriber tasks.',
+        'fields' => [
+          'id' => [
+            'description' => 'Primary Key: Unique task log ID.',
+            'type' => 'serial',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+          ],
+          'message' => [
+            'description' => 'The log message.',
+            'type' => 'varchar',
+            'length' => 255,
+            'not null' => TRUE,
+          ],
+          'type' => [
+            'description' => 'The type of log message.',
+            'type' => 'varchar',
+            'length' => 50,
+            'not null' => TRUE,
+          ],
+          'timestamp' => [
+            'description' => 'Unix timestamp of when the message was logged.',
+            'type' => 'int',
+            'not null' => TRUE,
+            'unsigned' => TRUE,
+          ],
+        ],
+        'primary key' => ['id'],
+      ];
+            
+
+    return $schema;
+    
+}
+
+
+/**
+ * Implements hook_install().
+ */
+function email_subscriber_install() {
+  // Perform any installation tasks here.
+  // For example, creating the table defined in hook_schema().
+  drupal_install_schema('email_subscriber');
+  
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function email_subscriber_uninstall() {
+  // Clean up when the module is uninstalled.
+  drupal_uninstall_schema('email_subscriber');
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function email_subscriber_update_8001() {
+  // Perform database updates field additions etc.
+  
+  $schema = [
+    'description' => 'Timestamp when the subscription was created.',
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+  ];
+
+  // Add the column to the table.
+  \Drupal::database()->schema()->addField('emtp_email_subscribe', 'created', $schema);
+  
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function email_subscriber_update_8002() {
+  // Perform database updates field additions etc.
+  
+  $unsubscribed = [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'Boolean: 1 if unsubscribed, 0 otherwise.',
+        'default' => 0,
+      ];
+  $unsubscribe_requested = [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'Timestamp when the unsubscribe request was made.',
+      ];
+   
+  // Add the column to the table.
+
+  \Drupal::database()->schema()->addField('email_subscriber', 'unsubscribed', $unsubscribed);
+  
+  \Drupal::database()->schema()->addField('email_subscriber', 'unsubscribe_requested', $unsubscribe_requested);
+  
+}
+
+/*
+/communication-preferences/v3/definitions
+{
+  "subscriptionDefinitions": [
+    {
+      "businessUnitId": 0,
+      "id": "65152031",
+      "name": "Marketing Information",
+      "description": "Marketing offers and updates.",
+      "purpose": "Marketing",
+      "communicationMethod": "Email",
+      "isActive": true,
+      "isDefault": true,
+      "isInternal": false,
+      "createdAt": "2022-11-24T19:50:22.366Z",
+      "updatedAt": "2022-11-24T19:50:22.366Z"
+    },
+    {
+      "businessUnitId": 0,
+      "id": "65167030",
+      "name": "One to One",
+      "description": "One to One emails",
+      "purpose": "Sales",
+      "communicationMethod": "Email",
+      "isActive": true,
+      "isDefault": true,
+      "isInternal": true,
+      "createdAt": "2022-11-24T22:42:45.710Z",
+      "updatedAt": "2022-11-24T22:42:45.710Z"
+    }
+  ]
+}
+
+CREATE TABLE newsletter_subscriptions (
+  email VARCHAR(255) PRIMARY KEY,
+  subscribed BOOLEAN DEFAULT TRUE,
+  subscribed_at INT, -- Timestamp of subscription
+  unsubscribed_at INT -- Timestamp of last unsubscribe action
+);
+
+CREATE TABLE subscription_actions (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  action VARCHAR(20) NOT NULL, -- e.g., "subscribe", "unsubscribe"
+  action_time INT NOT NULL, -- Timestamp of the action
+  details TEXT -- Any additional information, like the method of unsubscribe
+);
+
+*/
