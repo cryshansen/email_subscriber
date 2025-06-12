@@ -5,7 +5,7 @@ Dependency:
 composer require 'drupal/twig_tweak:^3.4'
 
 
-Installation Guide:
+## Installation Guide:
 
 Navigate to the configuration page under web services for adding api keys for both brevo and hubspot. 
 url route : admin/config/services/email-subscribe
@@ -13,7 +13,7 @@ url route : admin/config/services/email-subscribe
 
 
 
-Modal Installation v1: 
+## Modal Installation v1: 
 This requires the bootstrap modal component to exist in the html.html.twig of the current theme. 
 Then the button to launch is easily placed for initiating the modal into view. It must reside at this level as bootstrap appends the hide/show against the body tag and the modal must be at that hierarchy level.
 use a link or button to trigger the modal:
@@ -46,12 +46,12 @@ This below code must reside in the html.html.twig just before the `</body>`
 NOTE: There is a dependency for `twig_tweak` for the modal to work using `drupal_block`  composer require 'drupal/twig_tweak:^3.4'
 
 
-Block  Installation:
+## Block  Installation:
 This section refers to the EmailSubscribeForm.php file that is placed as a block on any page. 
 Navigate to the `Block structure` and choose `place block` button in the `region`  of your theme placeholders where you would like the form to show.  The label will be `Email Subscriber Page Block` select it and configure the page access or other items. Save and Test.
 
 
-Routes:
+## Routes:
 Below itemized routes are used to access different pages in a newsletter workflow between the web and third party emailing systems
 email_subscriber.emailsubscribe
 This route is a page level of the newsletter subscriber form. It uses ajax for submission response. 
@@ -69,7 +69,7 @@ This route manages an unsubscribe function on the website when a user unsubscrib
 In the backend the form records an `unsubcribed` boolean flag and `unsubscribe_requested` time stamp to handle the third party configurations
 
 
-Brevo Setup:
+## Brevo Setup:
 Follow Brevo API key can be found under user menu > SMTP & API you will need to configure the email access to your server account.
 Create a list like `newsletter-signup`
 Edit the newsletter form default add firstname , lastname attributes to the form save and progress to Double confirmation email. You must have a transactional account.
@@ -78,7 +78,9 @@ Under the transactional section workflows can be created to handle these compone
 https://developers.brevo.com/reference/createdoicontact
 
 
-Please NOTE: There are additional readme from originating site of inclusion as cleanup was not a priority. 
+## NOTE: 
+There are additional readme from originating site of inclusion as cleanup was not a priority. 
 To manage the changes cleanup is required there are notes that pertain to certain changes made in emtp.com from a development version and a deployed version. Readme-deployment.txt
 
-TODO: Clean up any residual information, code deprecation or correct errors as they arise.
+## TODO: 
+Clean up any residual information, code deprecation or correct errors as they arise.
